@@ -142,6 +142,7 @@ class Board(object):
         return [(i, j) for j in range(self.width) for i in range(self.height)
                 if self._board_state[i + j * self.height] == Board.BLANK]
 
+
     def get_player_location(self, player):
         """Find the current location of the specified player on the board.
 
@@ -190,6 +191,11 @@ class Board(object):
             player = self.active_player
         return self.__get_moves(self.get_player_location(player))
 
+
+    def sandbox_move(self, move):
+        idx = move[0] + move[1] * self.height
+        self._board_state[idx] = 1
+
     def apply_move(self, move):
         """Move the active player to a specified location.
 
@@ -206,6 +212,50 @@ class Board(object):
         self._board_state[-3] ^= 1
         self._active_player, self._inactive_player = self._inactive_player, self._active_player
         self.move_count += 1
+
+    def reverse_player(self):
+        self._active_player, self._inactive_player = self._inactive_player, self._active_player
+
+    #This is a function that looks three depth in advance too see how many options are there in the option space
+    def depth_space(self, player, max_depth = 3):
+        clone_state = self.copy()
+        reversed_state = self.copy()
+        reversed_state.reverse_player()
+
+        def deeper(clone, depth, max_depth):
+            moves = clone.get_legal_moves()
+            sum = 0
+            if depth > max_depth:
+                return len(moves)
+            for move in moves:
+                clone.sandbox_move(move)
+                sum += deeper(clone, depth + 1, max_depth)
+            return sum
+        if player == self._active_player:
+            return deeper(clone_state, 0, max_depth), deeper(reversed_state, 0, max_depth)
+        elif player == self._inactive_player:
+            return deeper(reversed_state, 0, max_depth), deeper(clone_state, 0, max_depth)
+
+    #This is a function that looks at the largest number of move the players can make if he/she were just by himself/herself
+    def max_depth(self, player):
+        clone_state = self.copy()
+        reversed_state = self.copy()
+        reversed_state.reverse_player()
+
+        def deeper(clone, depth):
+            moves = clone.get_legal_moves()
+            max_depth = 0
+            if moves == []:
+                return depth
+            for move in moves:
+                clone.sandbox_move(move)
+                max_depth = max(max_depth, deeper(clone, depth+1))
+            return max_depth
+
+        if player == self._active_player:
+            return deeper(clone_state, 0), deeper(reversed_state, 0)
+        elif player == self._inactive_player:
+            return deeper(reversed_state, 0), deeper(clone_state, 0)
 
     def is_winner(self, player):
         """ Test whether the specified player has won the game. """

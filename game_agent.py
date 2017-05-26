@@ -35,14 +35,28 @@ def custom_score(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
+    # Heuristic Value 1: Simple Amount of Moves Left
+
     if game.is_loser(player):
         return float("-inf")
 
     if game.is_winner(player):
         return float("inf")
 
-    # Heuristic Value 1: Simple Amount of Moves Left
-    return float(len(game.get_legal_moves(player=player)))
+    game_size = game.width * game.height
+
+    if float(len(game.get_blank_spaces())) <= float((1/3)*game_size):
+        return float(len(game.get_legal_moves(player=player))) - \
+               2 * float(len(game.get_legal_moves(player=game.get_opponent(player=player))))
+
+    elif float(len(game.get_blank_spaces())) <= float((2/3)*game_size):
+        self_score, enemy_score = game.depth_space(player = player)
+        return self_score - enemy_score
+
+    else:
+        self_score, enemy_score = game.max_depth(player=player)
+        return self_score - enemy_score
+
 
 def custom_score_2(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -72,9 +86,8 @@ def custom_score_2(game, player):
     if game.is_winner(player):
         return float("inf")
 
-    # Heuristic Value 1: Simple Amount of Moves Left
-    return float(len(game.get_legal_moves(player=player))) - \
-        float(len(game.get_legal_moves(player=game.get_opponent(player=player))))
+    self_score, enemy_score = game.depth_space(player=player)
+    return self_score - enemy_score
 
 def custom_score_3(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -98,8 +111,9 @@ def custom_score_3(game, player):
     float
         The heuristic value of the current game state to the specified player.
     """
-    return float(len(game.get_legal_moves(player=player))) - \
-        2 * float(len(game.get_legal_moves(player=game.get_opponent(player=player))))
+    # simple heuristic, punish oppoent moves.
+    self_score, enemy_score = game.max_depth(player=player)
+    return self_score - enemy_score
 
 
 class IsolationPlayer:
