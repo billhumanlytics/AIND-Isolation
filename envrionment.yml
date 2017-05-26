@@ -1,0 +1,42 @@
+name: aind
+channels:
+- !!python/unicode
+  'defaults'
+dependencies:
+- !!python/unicode
+  'mkl=2017.0.1=0'
+- !!python/unicode
+  'numpy=1.11.3=py36_0'
+- !!python/unicode
+  'openssl=1.0.2j=0'
+- !!python/unicode
+  'pip=9.0.1=py36_1'
+- !!python/unicode
+  'python=3.6.0=0'
+- !!python/unicode
+  'readline=6.2=2'
+- !!python/unicode
+  'scikit-learn=0.18.1=np111py36_1'
+- !!python/unicode
+  'scipy=0.18.1=np111py36_1'
+- !!python/unicode
+  'setuptools=27.2.0=py36_0'
+- !!python/unicode
+  'sqlite=3.13.0=0'
+- !!python/unicode
+  'tk=8.5.18=0'
+- !!python/unicode
+  'wheel=0.29.0=py36_0'
+- !!python/unicode
+  'xz=5.2.2=0'
+- !!python/unicode
+  'zlib=1.2.8=3'
+- pip:
+  - future==0.16.0
+  - hmmlearn==0.2.0
+  - pygame==1.9.3
+  - requests==2.14.2
+  - requests-toolbelt==0.8.0
+  - udacity-pa==0.2.4
+prefix: !!python/unicode '/Users/billsu/anaconda/envs/aind'
+
